@@ -8,7 +8,7 @@
 
 <p>@Model.Description</p>
 
-@if (User.IsInRole("Admin"))
+@if (User.IsInRole("admin"))
 {
     <a asp-action="Edit" asp-controller="About">Edit Description</a>
 }

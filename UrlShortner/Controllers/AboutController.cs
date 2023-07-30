@@ -6,7 +6,7 @@ using UrlShortner.Models;
 
 namespace UrlShortner.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "admin")]
     public class AboutController : Controller
     {
         private readonly ApplicationDbContext _dbContext;
@@ -22,18 +22,18 @@ namespace UrlShortner.Controllers
             var algorithmDescription = _dbContext.AlgorithmDescriptions.FirstOrDefault();
 
             // If the AlgorithmDescription is null, create a new instance with default values
-            if (algorithmDescription == null)
-            {
-                algorithmDescription = new AlgorithmDescription
-                {
-                    Description = "Default Description"
-                };
-            }
+            //if (algorithmDescription == null)
+            //{
+            //    algorithmDescription = new AlgorithmDescription
+            //    {
+            //        Description = "Default Description"
+            //    };
+            //}
 
             return View(algorithmDescription);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public IActionResult Edit()
         {
             var algorithmDescription = _dbContext.AlgorithmDescriptions.FirstOrDefault();
@@ -42,8 +42,8 @@ namespace UrlShortner.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
-        public IActionResult Edit(string newDescription)
+        [Authorize(Roles = "admin")]
+        public IActionResult Edit(AlgorithmDescription model)
         {
             if (ModelState.IsValid)
             {
@@ -52,21 +52,21 @@ namespace UrlShortner.Controllers
                 {
                     algorithmDescription = new AlgorithmDescription
                     {
-                        Description = newDescription
+                        Description = model.Description
                     };
                     _dbContext.AlgorithmDescriptions.Add(algorithmDescription);
                 }
                 else
                 {
-                    algorithmDescription.Description = newDescription;
+                    algorithmDescription.Description = model.Description;
                     _dbContext.AlgorithmDescriptions.Update(algorithmDescription);
                 }
 
                 _dbContext.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("About", "Home");
             }
 
-            return View();
+            return View(model);
         }
     }
 }
