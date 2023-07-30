@@ -4,7 +4,7 @@ using System.Diagnostics;
 using UrlShortner.Data;
 using UrlShortner.Models;
 
-namespace UrlShocrtner.Controllers
+namespace UrlShortner.Controllers
 {
     public class HomeController : Controller
     {
