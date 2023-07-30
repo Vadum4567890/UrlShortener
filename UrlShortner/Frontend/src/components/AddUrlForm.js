@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './styles/AddUrlForm.css';
+
+localStorage.setItem('authToken', 'тут ваш токен');
 
 const AddUrlForm = () => {
   const [originalUrl, setOriginalUrl] = useState('');
@@ -7,7 +10,7 @@ const AddUrlForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    const authToken = localStorage.getItem('authToken');
     // Виклик API для створення нового скороченого URL
     axios.post('https://localhost:7058/api/ShortUrl', { originalUrl })
       .then(response => setShortenedUrl(response.data.shortUrl))

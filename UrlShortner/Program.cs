@@ -6,7 +6,6 @@ using UrlShortner.Interfaces;
 using UrlShortner.Models;
 using Microsoft.Extensions.Options;
 using UrlShortener.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -35,20 +34,13 @@ builder.Services.AddRazorPages();
 builder.Services.AddScoped<SignInManager<IdentityUser>>();
 builder.Services.AddScoped<IUrlService, UrlService>();
 builder.Services.AddControllersWithViews();
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = "myissuer", // Замініть на правильний випускаючий (Issuer) від вашого JWT токену
-                ValidAudience = "myaudience", // Замініть на правильний аудиторії (Audience) від вашого JWT токену
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your_secret_key")) // Замініть на секретний ключ, який використовується для підпису JWT токену
-            };
-        });
+builder.Services.AddSession(options =>
+{
+    // Налаштування таймауту сесії (наприклад, 20 хвилин)
+    options.IdleTimeout = TimeSpan.FromMinutes(20);
+    // Налаштування cookie для сесії
+    options.Cookie.HttpOnly = true;
+});
 
 
 using (var scope = builder.Services.BuildServiceProvider().CreateScope())
@@ -118,7 +110,7 @@ app.UseRouting();
 app.UseCors(builder => builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader());
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseSession();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

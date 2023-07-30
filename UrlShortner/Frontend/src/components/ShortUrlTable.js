@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import  { Link } from 'react-router-dom';
+import './styles/ShortUrlTable.css';
+
 
 const ShortUrlTable = () => {
   const [shortUrls, setShortUrls] = useState([]);
 
   useEffect(() => {
-    // Отримання списку скорочених URL при завантаженні компонента
     fetchShortUrls();
   }, []);
 
@@ -27,6 +29,7 @@ const ShortUrlTable = () => {
             <th>originalUrl URL</th>
             <th>ShortUrl URL</th>
             <th>Owner</th>
+            <th>Details</th>
           </tr>
         </thead>
         <tbody>
@@ -35,6 +38,9 @@ const ShortUrlTable = () => {
               <td>{url.originalUrl}</td>
               <td>{url.shortUrl}</td>
               <td>{url.createdBy}</td>
+              <td>
+                <Link to={`/shorturl/${url.id}`}>Details</Link>
+              </td>
             </tr>
           ))}
         </tbody>

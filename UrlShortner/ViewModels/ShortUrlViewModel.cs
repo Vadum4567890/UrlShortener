@@ -1,4 +1,4 @@
-﻿namespace UrlShortner.ViewModel
+﻿namespace UrlShortner.ViewModels
 {
     public class ShortUrlViewModel
     {
