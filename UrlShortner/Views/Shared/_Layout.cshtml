@@ -23,38 +23,30 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">Abousdt</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About</a>
                         </li>
-              
+         
                    
-                    </ul>
-                    <ul>
-                        @if (!User.Identity.IsAuthenticated)
-                        {
-                            <li><a asp-controller="Account" asp-action="Login">Login</a></li>
-                            <li><a asp-controller="Account" asp-action="Register">Register</a></li>
-                        }
                     </ul>
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <form asp-controller="Account" asp-action="Logout" method="post">
+                        <p>Hello, @User.Identity.Name!</p>
+                        <form method="post" action="@Url.Action("Logout", "Account")">
+                            @Html.AntiForgeryToken()
                             <button type="submit">Logout</button>
                         </form>
                     }
-                    <partial name="_LoginPartial" />
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login">Login</a>
+                        <a asp-controller="Account" asp-action="Register">Register</a>
+                    }
+
                 </div>
             </div>
         </nav>
+
     </header>
-    <nav>
-        @if (User.Identity.IsAuthenticated)
-        {
-            <form method="post" action="@Url.Action("Logout", "Account")">
-                @Html.AntiForgeryToken()
-                <button type="submit">Logout</button>
-            </form>
-        }
-    </nav>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()

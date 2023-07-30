@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using UrlShortner.ViewModel;
+using UrlShortner.ViewModels;
 
 namespace UrlShortner.Controllers
 {
@@ -30,6 +30,11 @@ namespace UrlShortner.Controllers
 
                 if (result.Succeeded)
                 {
+                    // Отримуємо користувача
+                    var user = await _userManager.FindByEmailAsync(model.Email);
+                    // Зберігаємо ідентифікатор користувача у сесії
+                    HttpContext.Session.SetString("UserId", user.Id);
+
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -51,7 +56,7 @@ namespace UrlShortner.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = model.Name, Email = model.Email };
+                var user = new IdentityUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using UrlShortner.ViewModel;
+using UrlShortner.ViewModels;
 using UrlShortner.Interfaces;
 
 
@@ -35,7 +35,8 @@ namespace UrlShortner.Controllers
 
             try
             {
-                var newUrl = _urlService.ShortenUrl(model.OriginalUrl, User.Identity.Name);
+                var userId = User.Identity.Name; // Отримуємо ідентифікатор користувача з імені користувача з авторизованого запиту
+                var newUrl = _urlService.ShortenUrl(model.OriginalUrl, userId);
                 return Ok(newUrl);
             }
             catch (Exception ex)
@@ -48,8 +49,8 @@ namespace UrlShortner.Controllers
         [Authorize]
         public IActionResult DeleteShortUrl(int id)
         {
-            var username = User.Identity.Name;
-            var isDeleted = _urlService.DeleteUrl(id, username);
+            var userId = User.Identity.Name; // Отримуємо ідентифікатор користувача з імені користувача з авторизованого запиту
+            var isDeleted = _urlService.DeleteUrl(id, userId);
 
             if (isDeleted)
             {
