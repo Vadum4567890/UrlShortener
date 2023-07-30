@@ -35,20 +35,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddScoped<SignInManager<IdentityUser>>();
 builder.Services.AddScoped<IUrlService, UrlService>();
 builder.Services.AddControllersWithViews();
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = "myissuer", // Замініть на правильний випускаючий (Issuer) від вашого JWT токену
-                ValidAudience = "myaudience", // Замініть на правильний аудиторії (Audience) від вашого JWT токену
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your_secret_key")) // Замініть на секретний ключ, який використовується для підпису JWT токену
-            };
-        });
+
 
 
 using (var scope = builder.Services.BuildServiceProvider().CreateScope())
