@@ -18,9 +18,10 @@
   }
   
   input {
-    width: 100%;
+    width: 20%;
     padding: 10px;
     font-size: 16px;
+
   }
   
   button {
@@ -39,4 +40,9 @@
   p {
     margin-top: 20px;
     font-size: 16px;
+  }
+  div {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
   }

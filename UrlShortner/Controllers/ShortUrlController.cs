@@ -62,11 +62,11 @@ namespace UrlShortner.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
-        public IActionResult DeleteShortUrl(int id)
+       // [Authorize]
+        public async Task<IActionResult> DeleteShortUrl(int id)
         {
             var userId = User.Identity.Name; 
-            var isDeleted = _urlService.DeleteUrl(id, userId);
+            var isDeleted = await _urlService.DeleteUrl(id, userId);
 
             if (isDeleted)
             {
