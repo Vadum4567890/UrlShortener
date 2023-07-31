@@ -21,15 +21,6 @@ namespace UrlShortner.Controllers
         {
             var algorithmDescription = _dbContext.AlgorithmDescriptions.FirstOrDefault();
 
-            // If the AlgorithmDescription is null, create a new instance with default values
-            //if (algorithmDescription == null)
-            //{
-            //    algorithmDescription = new AlgorithmDescription
-            //    {
-            //        Description = "Default Description"
-            //    };
-            //}
-
             return View(algorithmDescription);
         }
 
@@ -65,7 +56,6 @@ namespace UrlShortner.Controllers
                 _dbContext.SaveChanges();
                 return RedirectToAction("About", "Home");
             }
-
             return View(model);
         }
     }

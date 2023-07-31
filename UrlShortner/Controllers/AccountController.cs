@@ -30,9 +30,8 @@ namespace UrlShortner.Controllers
 
                 if (result.Succeeded)
                 {
-                    // Отримуємо користувача
                     var user = await _userManager.FindByEmailAsync(model.Email);
-                    // Зберігаємо ідентифікатор користувача у сесії
+                    // Save User Id in Session
                     HttpContext.Session.SetString("UserId", user.Id);
 
                     return RedirectToAction("Index", "Home");

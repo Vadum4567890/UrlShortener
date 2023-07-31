@@ -35,7 +35,7 @@ namespace UrlShortner.Controllers
 
             try
             {
-                var userId = User.Identity.Name; // Отримуємо ідентифікатор користувача з імені користувача з авторизованого запиту
+                var userId = User.Identity.Name; 
                 var newUrl = _urlService.ShortenUrl(model.OriginalUrl, userId);
                 return Ok(newUrl);
             }
@@ -49,7 +49,7 @@ namespace UrlShortner.Controllers
         [Authorize]
         public IActionResult DeleteShortUrl(int id)
         {
-            var userId = User.Identity.Name; // Отримуємо ідентифікатор користувача з імені користувача з авторизованого запиту
+            var userId = User.Identity.Name; 
             var isDeleted = _urlService.DeleteUrl(id, userId);
 
             if (isDeleted)
