@@ -7,6 +7,6 @@ namespace UrlShortner.Interfaces
         List<Url> GetAllUrls();
         Url GetUrlById(int Id);
         Url ShortenUrl(string OriginalUrl, string UserName);
-        bool DeleteUrl(int Id, string UserName);
+        Task<bool> DeleteUrl(int Id, string UserName);
     }
 }

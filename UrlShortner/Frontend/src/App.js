@@ -9,7 +9,7 @@ const App = () => {
     <Router>
       <div>
         <nav>
-          <ul>
+          <ul class="no-bullets">
             <li><Link to="/">Головна</Link></li>
             <li><Link to="/add">Додати новий URL</Link></li>
           </ul>
