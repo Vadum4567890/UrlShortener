@@ -23,7 +23,7 @@ namespace UrlShortner.Data
               .IsUnique();
 
 
-            var adminRoleId = "AdminRoleId"; // Replace with a unique identifier for the admin role
+            var adminRoleId = "AdminRoleId";
             modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
             {
                 Id = adminRoleId,

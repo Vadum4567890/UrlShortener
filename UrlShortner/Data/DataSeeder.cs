@@ -7,13 +7,11 @@ namespace UrlShortner.Data
     {
         public static void SeedData(ApplicationDbContext dbContext)
         {
-            // Check if the database is empty or needs seeding
             if (!dbContext.AlgorithmDescriptions.Any())
             {
-                // Add initial data here
-                var algorithmDescription = new Models.AlgorithmDescription
+                var algorithmDescription = new AlgorithmDescription
                 {
-                    Description = "Default Description"
+                    Description = "Made an algorithm that takes the original URL and uses a regex that clears the beginning of http: and the end of the link after the domain"
                 };
 
                 dbContext.AlgorithmDescriptions.Add(algorithmDescription);

@@ -2,18 +2,28 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './styles/AddUrlForm.css';
 
-localStorage.setItem('authToken', 'тут ваш токен');
-
 const AddUrlForm = () => {
   const [originalUrl, setOriginalUrl] = useState('');
   const [shortenedUrl, setShortenedUrl] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const authToken = localStorage.getItem('authToken');
-    // Виклик API для створення нового скороченого URL
-    axios.post('https://localhost:7058/api/ShortUrl', { originalUrl })
-      .then(response => setShortenedUrl(response.data.shortUrl))
+
+    // Створюємо об'єкт з усіма параметрами моделі ShortUrlViewModel
+    const newUrlData = {
+      originalUrl: originalUrl,
+      shortUrl: '', // Даний параметр буде порожнім, так як сервер генерує скорочені URL
+      createdBy: '', // Даний параметр також буде порожнім, так як ми його заповнимо на сервері
+      createdDate: '', // Даний параметр також буде порожнім, так як ми його заповнимо на сервері
+    };
+
+    // Викликаємо API для створення нового скороченого URL
+    axios.post('https://localhost:7058/api/ShortUrl', newUrlData, {withCredentials: true})
+      .then(response => {
+        // При успішному створенні, отримуємо скорочений URL з відповіді сервера
+        setShortenedUrl(response.data.shortUrl);
+        window.location.href = '/';
+      })
       .catch(error => console.error('Error adding URL:', error));
   };
 

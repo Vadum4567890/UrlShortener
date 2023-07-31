@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using UrlShortner.Data;
 using UrlShortner.Interfaces;
 using UrlShortner.Models;
@@ -26,18 +27,24 @@ namespace UrlShortner.Services
 
         public Url ShortenUrl(string originalUrl, string userName)
         {
+            if (string.IsNullOrWhiteSpace(originalUrl))
+            {
+                throw new ArgumentException("Original URL cannot be empty or contain only whitespaces.");
+            }
             if (UrlExists(originalUrl))
             {
                 throw new Exception("URL already exists.");
             }
 
-            var shortUrl = GenerateShortUrl();
+            var shortUrl = GenerateShortUrl(originalUrl);
+            // Перевірка, чи користувач аутентифікований
+            string createdBy = string.IsNullOrWhiteSpace(userName) ? "Anonymous" : userName;
 
             var newUrl = new Url
             {
                 OriginalUrl = originalUrl,
                 ShortUrl = shortUrl,
-                CreatedBy = userName,
+                CreatedBy = createdBy,
                 CreatedDate = DateTime.UtcNow
             };
 
@@ -63,19 +70,23 @@ namespace UrlShortner.Services
 
      
 
-        private string GenerateShortUrl()
+        private string GenerateShortUrl(string originalUrl)
         {
-            byte[] randomBytes = new byte[6];
-            using (var rng = new RNGCryptoServiceProvider())
+            // Задаємо регулярний вираз для пошуку частини перед доменом
+            string pattern = @"^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n?]+)";
+
+            // Пошук відповідності регулярному виразу
+            Match match = Regex.Match(originalUrl, pattern);
+
+            // Якщо знайдено відповідність, повертаємо групу з результатом
+            if (match.Success)
             {
-                rng.GetBytes(randomBytes);
+                string shortUrl = match.Groups[1].Value;
+                return shortUrl;
             }
 
-            string base64String = Convert.ToBase64String(randomBytes);
-
-            base64String = base64String.Replace('+', '-').Replace('/', '_').TrimEnd('=');
-
-            return base64String;
+            // Якщо не знайдено відповідності, повертаємо весь `originalUrl`
+            return originalUrl;
         }
 
 

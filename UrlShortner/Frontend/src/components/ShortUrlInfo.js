@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 const ShortUrlInfo = () => {
   const { id } = useParams();
@@ -11,10 +11,14 @@ const ShortUrlInfo = () => {
     fetchShortUrlInfo(id);
   }, [id]);
 
+  const getFormattedDate = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    return date.toISOString().split('T')[0];
+  };
+
   const fetchShortUrlInfo = async (id) => {
     try {
-      // Виклик API для отримання інформації про конкретний URL з використанням сесій
-      const response = await axios.get(`https://localhost:7058/api/ShortUrlInfo/${id}`, { withCredentials: true });
+      const response = await axios.get(`https://localhost:7058/api/ShortUrl/${id}`);
       setUrlInfo(response.data);
     } catch (error) {
       console.error('Помилка при отриманні інформації про URL:', error);
@@ -28,10 +32,35 @@ const ShortUrlInfo = () => {
   return (
     <div>
       <h2>ShortUrl Info</h2>
-      <p>Original URL: {urlInfo.originalUrl}</p>
-      <p>Short URL: {urlInfo.shortUrl}</p>
-      <p>Owner: {urlInfo.createdBy}</p>
-      <p>CreatedDate: {urlInfo.createdDate}</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Original URL:</td>
+            <td>{urlInfo.originalUrl}</td>
+          </tr>
+          <tr>
+            <td>Short URL:</td>
+            <td>{urlInfo.shortUrl}</td>
+          </tr>
+          <tr>
+            <td>Owner:</td>
+            <td>{urlInfo.createdBy}</td>
+          </tr>
+          <tr>
+            <td>Created Date:</td>
+            <td>{getFormattedDate(urlInfo.createdDate)}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        <Link to="/">Back to ShortUrlTable</Link>
+      </p>
     </div>
   );
 };
