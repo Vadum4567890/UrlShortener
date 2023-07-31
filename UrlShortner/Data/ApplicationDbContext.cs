@@ -12,7 +12,7 @@ namespace UrlShortner.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
-            //Database.EnsureCreated();
+            Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -23,7 +23,7 @@ namespace UrlShortner.Data
               .IsUnique();
 
 
-            var adminRoleId = "AdminRoleId"; // Replace with a unique identifier for the admin role
+            var adminRoleId = "AdminRoleId";
             modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
             {
                 Id = adminRoleId,

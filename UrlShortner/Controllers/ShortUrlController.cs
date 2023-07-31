@@ -25,17 +25,20 @@ namespace UrlShortner.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        // якщо додати Authorize то не буде все додаватись бо ф-нал не дороблений ще
+     // [Authorize]
         public IActionResult AddShortUrl([FromBody] ShortUrlViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             try
             {
-                var userId = User.Identity.Name; // Отримуємо ідентифікатор користувача з імені користувача з авторизованого запиту
+                Console.WriteLine($"Received request with OriginalUrl: {model?.OriginalUrl}");
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var userId = User.Identity.Name;
                 var newUrl = _urlService.ShortenUrl(model.OriginalUrl, userId);
                 return Ok(newUrl);
             }
@@ -45,11 +48,24 @@ namespace UrlShortner.Controllers
             }
         }
 
+        [HttpGet("{id}")]
+        public IActionResult GetShortUrlInfo(int id)
+        {
+            var shortUrl = _urlService.GetUrlById(id);
+
+            if (shortUrl != null)
+            {
+                return Ok(shortUrl);
+            }
+
+            return NotFound(new { message = "Скорочений URL не знайдено." });
+        }
+
         [HttpDelete("{id}")]
         [Authorize]
         public IActionResult DeleteShortUrl(int id)
         {
-            var userId = User.Identity.Name; // Отримуємо ідентифікатор користувача з імені користувача з авторизованого запиту
+            var userId = User.Identity.Name; 
             var isDeleted = _urlService.DeleteUrl(id, userId);
 
             if (isDeleted)

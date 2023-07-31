@@ -36,6 +36,7 @@ namespace UrlShortner.Controllers
 
             return View(algorithmDescription);
         }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

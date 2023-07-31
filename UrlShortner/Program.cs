@@ -1,23 +1,21 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using UrlShortner.Data;
 using UrlShortner.Interfaces;
-using UrlShortner.Models;
-using Microsoft.Extensions.Options;
-using UrlShortener.Services;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using UrlShortner.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
-
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
    options.UseSqlServer(connectionString, sqlOptions => sqlOptions.EnableRetryOnFailure()));
+
 builder.Services.AddCors(c =>
 {
-    c.AddPolicy("AllowOrigin", option => option.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader());
+    c.AddPolicy("AllowOrigin", option => option.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials());
 });
+
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
@@ -26,7 +24,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
     options.Password.RequireNonAlphanumeric = false;
     options.User.RequireUniqueEmail = false;
 })
-.AddRoles<IdentityRole>() // Add this line to register the RoleManager service
+.AddRoles<IdentityRole>() 
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
@@ -36,9 +34,7 @@ builder.Services.AddScoped<IUrlService, UrlService>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession(options =>
 {
-    // Налаштування таймауту сесії (наприклад, 20 хвилин)
     options.IdleTimeout = TimeSpan.FromMinutes(20);
-    // Налаштування cookie для сесії
     options.Cookie.HttpOnly = true;
 });
 
@@ -61,7 +57,8 @@ async Task CreateAdminUser(IServiceProvider services, IConfiguration configurati
         var adminUser = new IdentityUser
         {
             UserName = adminEmail,
-            Email = adminEmail
+            Email = adminEmail,
+            EmailConfirmed = true
         };
 
         var result = await userManager.CreateAsync(adminUser, adminPassword);
@@ -75,24 +72,23 @@ async Task CreateAdminUser(IServiceProvider services, IConfiguration configurati
         }
         else
         {
-            // Handle the error when creating the administrator
-            // (result.Errors contains the list of errors)
+            throw new Exception("Nice Bro");
+            
         }
     }
 }
+
 using (var scope = builder.Services.BuildServiceProvider().CreateScope())
 {
     var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-    // Seed the database with initial data
     DataSeeder.SeedData(dbContext);
-
     await CreateAdminUser(scope.ServiceProvider, configuration);
 }
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -100,20 +96,19 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-app.UseCors(builder => builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader());
+// Configure Cors Policy
+app.UseCors(builder => builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseSession();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
-
 app.Run();
